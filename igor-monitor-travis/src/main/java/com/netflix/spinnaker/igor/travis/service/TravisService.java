@@ -179,15 +179,11 @@ public class TravisService implements BuildOperations, BuildProperties {
     String repoSlug = cleanRepoSlug(inputRepoSlug);
     String branch = branchFromRepoSlug(inputRepoSlug);
     RepoRequest repoRequest = new RepoRequest(branch.isEmpty() ? "master" : branch);
-    String buildMessage;
     if (buildMessageKey != null && queryParameters.containsKey(buildMessageKey)) {
-      buildMessage = queryParameters.get(buildMessageKey);
+      String buildMessage = queryParameters.get(buildMessageKey);
       queryParameters.remove(buildMessageKey);
-    } else {
-      buildMessage =
-          "Application: '${execution.application}', pipeline: '${execution.name}', execution: '${execution.id}'";
+      repoRequest.setMessage(repoRequest.getMessage() + ": " + buildMessage);
     }
-    repoRequest.setMessage(repoRequest.getMessage() + ": " + buildMessage);
     repoRequest.setConfig(new Config(queryParameters));
     final TriggerResponse triggerResponse =
         travisClient.triggerBuild(getAccessToken(), repoSlug, repoRequest);
@@ -339,6 +335,7 @@ public class TravisService implements BuildOperations, BuildProperties {
                 TravisBuildState.failed,
                 TravisBuildState.canceled)
             .stream()
+            .filter(job -> job.getBuild() != null)
             .collect(
                 Collectors.groupingBy(V3Job::getBuild, LinkedHashMap::new, Collectors.toList()));
 
