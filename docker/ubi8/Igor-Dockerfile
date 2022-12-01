@@ -5,5 +5,7 @@ RUN yum -y install java-11-openjdk-headless.x86_64 wget vim  curl net-tools nett
 RUN yum -y  update
 RUN adduser spinnaker
 RUN mkdir -p /opt/igor/plugins
+RUN chmod -R 777 /opt/echo/plugins/
+RUN chown -R spinnaker:spinnaker /opt/
 USER spinnaker
 CMD ["/opt/igor/bin/igor"]
