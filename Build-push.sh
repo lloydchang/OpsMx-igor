@@ -32,10 +32,7 @@ echo "Build id is --------------------- $BUILD_ID"
    RELEASE_IMAGENAME="opsmx11/ubi8-spin-igor:${GITHASH}-${BUILD_NUMBER}"  
    
    # To Build Docker image with Given Docker File
-   docker build -t $IMAGENAME .  -f  ${DOCKERFILE_PATH} --no-cache 
-   
-   # Create new Image Tag for Docker.io with the previous Build
-   docker tag $IMAGENAME $RELEASE_IMAGENAME
+   docker build -t $IMAGENAME -t $RELEASE_IMAGENAME .  -f  ${DOCKERFILE_PATH} --no-cache 
    
    # Quay.io login
    docker login -u $quay_user -p $quay_pass quay.io
@@ -46,9 +43,11 @@ echo "Build id is --------------------- $BUILD_ID"
    # Docker.io login
    docker login -u $docker_user -p $docker_pass docker.io
    
-   # To Push the Docker image into Quay.io
+   # To Push the Docker image into Docker.io
    docker push $RELEASE_IMAGENAME
 
+
+echo "IMAGE: ${IMAGENAME}"
 
 # Quay Image Name as Artifact
 echo \"Quay_IMAGE_NAME\": \"${IMAGENAME}\" > file.properties;
