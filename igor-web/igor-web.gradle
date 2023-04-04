@@ -1,12 +1,4 @@
-ext {
-  springConfigLocation = System.getProperty('spring.config.additional-location', "${System.getProperty('user.home')}/.spinnaker/".toString())
-}
-
 apply plugin: 'io.spinnaker.package'
-
-run {
-  systemProperty('spring.config.additional-location', project.springConfigLocation)
-}
 
 mainClassName = 'com.netflix.spinnaker.igor.Main'
 
@@ -46,7 +38,7 @@ dependencies {
     testImplementation "org.hamcrest:hamcrest-core"
     testRuntimeOnly "cglib:cglib-nodep"
     testRuntimeOnly "org.objenesis:objenesis"
-    implementation "org.codehaus.groovy:groovy-all"
+    implementation "org.codehaus.groovy:groovy"
 
     implementation "com.fasterxml.jackson.core:jackson-annotations"
     implementation "com.fasterxml.jackson.core:jackson-core"
@@ -94,6 +86,7 @@ dependencies {
 
     testImplementation "com.squareup.okhttp:mockwebserver"
     testImplementation "io.spinnaker.kork:kork-jedis-test"
+    testImplementation "org.codehaus.groovy:groovy-datetime"
     testImplementation "org.junit.jupiter:junit-jupiter-api"
     testImplementation "org.assertj:assertj-core"
 
