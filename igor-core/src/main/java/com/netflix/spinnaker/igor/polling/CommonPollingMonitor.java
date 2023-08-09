@@ -48,6 +48,8 @@ public abstract class CommonPollingMonitor<I extends DeltaItem, T extends Pollin
   private final Id itemsOverThresholdId;
   private final Id pollCycleFailedId;
   private final Id pollCycleTimingId;
+
+  private final Id pollCyclePassedId;
   private final Optional<LockService> lockService;
   private ScheduledFuture<?> monitor;
   protected Logger log = LoggerFactory.getLogger(getClass());
@@ -73,6 +75,7 @@ public abstract class CommonPollingMonitor<I extends DeltaItem, T extends Pollin
     pollCycleFailedId = registry.createId("pollingMonitor.failed");
     missedNotificationId = registry.createId("pollingMonitor.missedEchoNotification");
     pollCycleTimingId = registry.createId("pollingMonitor.pollTiming");
+    pollCyclePassedId = registry.createId("pollingMonitor.passed");
   }
 
   @Override
@@ -210,6 +213,10 @@ public abstract class CommonPollingMonitor<I extends DeltaItem, T extends Pollin
       registry
           .gauge(itemsCachedId.withTags("monitor", monitorName, "partition", ctx.partitionName))
           .set(deltaSize);
+      registry
+          .counter(
+              pollCyclePassedId.withTags("monitor", monitorName, "partition", ctx.partitionName))
+          .increment();
     } catch (Exception e) {
       log.error(
           "Failed to update monitor items for {}:{}",
